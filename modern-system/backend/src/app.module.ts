@@ -27,8 +27,16 @@ import { HealthModule } from './health/health.module';
         uri: configService.get<string>('MONGODB_URI'),
         // Atlas cannot run the docker-entrypoint init script, so the unique
         // indexes declared on each schema must be built by Mongoose itself.
-        // Turning this off in production avoids surprise index writes on boot.
-        autoIndex: configService.get<string>('NODE_ENV') !== 'production',
+        //
+        // The previous condition disabled this in production, which is
+        // exactly where Atlas is used: a fresh Atlas cluster then silently
+        // had no unique index on `email` or `username`, allowing duplicate
+        // accounts. Building indexes on boot is the correct trade-off here —
+        // a few hundred documents cost milliseconds.
+        //
+        // `MONGO_AUTO_INDEX=false` opts out for anyone who would rather
+        // manage indexes out of band.
+        autoIndex: configService.get<string>('MONGO_AUTO_INDEX') !== 'false',
       }),
       inject: [ConfigService],
     }),

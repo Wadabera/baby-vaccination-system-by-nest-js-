@@ -1,0 +1,39 @@
+# Render blueprint for the NestJS API.
+#
+# Deploy with:  render blueprint launch
+# or paste this repository into Render > New > Blueprint.
+#
+# Secrets are NOT stored here. Set these in the Render dashboard
+# (Environment, or "Add from .env"):
+#   MONGODB_URI     mongodb+srv://...
+#   JWT_SECRET      a long random string
+#   CORS_ORIGIN     the Vercel URL, e.g. https://your-app.vercel.app
+#
+# `.env.example` in backend/ documents every variable.
+
+services:
+  - type: web
+    name: vaccination-api
+    runtime: node
+    plan: free
+    region: frankfurt # closest Atlas region for this cluster
+    rootDir: backend
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start:prod
+    healthCheckPath: /api/health/check
+    # Render injects PORT; the app reads it and binds 0.0.0.0.
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false # set in the dashboard — contains credentials
+      - key: JWT_SECRET
+        generateValue: true # Render creates a strong random secret
+      - key: CORS_ORIGIN
+        sync: false # the Vercel URL of the frontend
+      - key: JWT_EXPIRES_IN
+        value: 1h
+      # Builds the unique indexes on users.email / users.username, which
+      # Atlas cannot create through the docker init script.
+      - key: MONGO_AUTO_INDEX
+        value: "true"
