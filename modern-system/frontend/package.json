@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "check:case": "node ../scripts/check-import-case.cjs .",
     "lint": "eslint .",
     "preview": "vite preview",
     "type-check": "tsc --noEmit"
