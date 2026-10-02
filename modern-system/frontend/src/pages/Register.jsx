@@ -13,7 +13,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { Field, Alert } from "../components/ui";
+import { Field, Alert } from "../components/ui/Primitives";
 
 const BLOOD_TYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 

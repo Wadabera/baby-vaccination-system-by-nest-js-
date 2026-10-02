@@ -10,7 +10,10 @@
  *
  * It was written after exactly that failure: src/components/ui/Index.js was
  * re-exported as a barrel, thirteen files imported the directory, and the Vercel
- * build failed on `./components/ui` because no lowercase `index.js` existed.
+ * build failed on `./components/ui` because no lowercase `index.js` existed. The
+ * barrel has since been deleted and those imports now name their module
+ * directly, which removes the directory-index resolution step entirely. This
+ * check stays so the next rename cannot introduce the same class of failure.
  *
  * Deliberately not a `prebuild` hook: a false positive would block local builds
  * too. Run it when renaming or adding files.

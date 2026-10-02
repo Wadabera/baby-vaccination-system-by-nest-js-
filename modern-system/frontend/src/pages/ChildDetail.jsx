@@ -15,14 +15,8 @@ import {
 import api from "../api/axios";
 import { fullName, formatDate, progressOf, ageInMonths } from "../utils/format";
 import { apiErrorMessage } from "../utils/apiError";
-import {
-  DoseTimeline,
-  DoseSummary,
-  CoverageRing,
-  Alert,
-  Skeleton,
-  Segmented,
-} from "../components/ui";
+import { DoseTimeline, DoseSummary, CoverageRing, Segmented } from "../components/ui/Data";
+import { Alert, Skeleton } from "../components/ui/Primitives";
 
 const VIEWS = [
   { value: "timeline", label: "Timeline", icon: Sparkles },

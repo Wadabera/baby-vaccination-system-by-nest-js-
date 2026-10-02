@@ -18,7 +18,7 @@ import {
   FileText,
 } from "lucide-react";
 import api from "../api/axios";
-import { Reveal, EmptyState, Skeleton } from "../components/ui";
+import { Reveal, EmptyState, Skeleton } from "../components/ui/Primitives";
 
 /* ------------------------------------------------------------------ *
  * Content

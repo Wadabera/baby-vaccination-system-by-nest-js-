@@ -1,7 +1,7 @@
 import { useId, useState } from "react";
 import { motion } from "framer-motion";
 import { TrendingUp } from "lucide-react";
-import { CountUp, Skeleton } from "../ui";
+import { CountUp, Skeleton } from "../ui/Primitives";
 
 /**
  * Dashboard summary tile.

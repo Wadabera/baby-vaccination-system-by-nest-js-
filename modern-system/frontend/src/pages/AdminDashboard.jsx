@@ -21,21 +21,10 @@ import {
 import api from "../api/axios";
 import { fullName } from "../utils/format";
 import { apiErrorMessage } from "../utils/apiError";
-import {
-  StatCard,
-  PageHeader,
-  Alert,
-  Collapse,
-  Modal,
-  ConfirmDialog,
-  EmptyState,
-  Skeleton,
-  SearchInput,
-  Field,
-  Tooltip,
-  Avatar,
-  useToast,
-} from "../components/ui";
+import { StatCard, PageHeader, Tooltip, Avatar } from "../components/ui/SummaryCards";
+import { Alert, Collapse, Modal, EmptyState, Skeleton, SearchInput, Field } from "../components/ui/Primitives";
+import { ConfirmDialog } from "../components/ui/ConfirmDialog";
+import { useToast } from "../components/ui/toastContext";
 
 const ROLES = ["admin", "registrar", "doctor", "parent"];
 

@@ -19,18 +19,11 @@ import {
 import api from "../api/axios";
 import { fullName, formatDate, BLOOD_TYPES } from "../utils/format";
 import { apiErrorMessage } from "../utils/apiError";
-import {
-  PageHeader,
-  StatCard,
-  Field,
-  SearchInput,
-  Modal,
-  ConfirmDialog,
-  Alert,
-  Skeleton,
-  OnboardingHint,
-  useToast,
-} from "../components/ui";
+import { PageHeader, StatCard } from "../components/ui/SummaryCards";
+import { Field, SearchInput, Modal, Alert, Skeleton } from "../components/ui/Primitives";
+import { ConfirmDialog } from "../components/ui/ConfirmDialog";
+import { OnboardingHint } from "../components/ui/Data";
+import { useToast } from "../components/ui/toastContext";
 
 const emptyMother = {
   firstName: "",

@@ -18,7 +18,7 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { homeFor } from "../utils/navigation";
 import { apiErrorMessage } from "../utils/apiError";
-import { Reveal, Alert, Field } from "../components/ui";
+import { Reveal, Alert, Field } from "../components/ui/Primitives";
 
 const HIGHLIGHTS = [
   {

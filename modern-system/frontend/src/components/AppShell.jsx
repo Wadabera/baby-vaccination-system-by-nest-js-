@@ -17,7 +17,7 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { homeFor } from "../utils/navigation";
 import { fullName } from "../utils/format";
-import { Avatar } from "./ui";
+import { Avatar } from "./ui/SummaryCards";
 
 const ROLE_META = {
   admin: {

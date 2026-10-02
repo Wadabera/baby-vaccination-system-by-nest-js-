@@ -13,15 +13,10 @@ import {
 import api from "../api/axios";
 import { fullName, formatDate, progressOf } from "../utils/format";
 import { apiErrorMessage } from "../utils/apiError";
-import {
-  PageHeader,
-  StatCard,
-  SectionCard,
-  StackedBars,
-  Alert,
-  Skeleton,
-  useToast,
-} from "../components/ui";
+import { PageHeader, StatCard, SectionCard } from "../components/ui/SummaryCards";
+import { StackedBars } from "../components/ui/Data";
+import { Alert, Skeleton } from "../components/ui/Primitives";
+import { useToast } from "../components/ui/toastContext";
 
 /**
  * Programme analytics.

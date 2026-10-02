@@ -15,16 +15,10 @@ import {
 import api from "../api/axios";
 import { fullName, formatDate, progressOf } from "../utils/format";
 import { apiErrorMessage } from "../utils/apiError";
-import {
-  PageHeader,
-  ProgressBar,
-  CoverageRing,
-  Alert,
-  EmptyState,
-  Skeleton,
-  StatCard,
-  useToast,
-} from "../components/ui";
+import { PageHeader, ProgressBar, StatCard } from "../components/ui/SummaryCards";
+import { CoverageRing } from "../components/ui/Data";
+import { Alert, EmptyState, Skeleton } from "../components/ui/Primitives";
+import { useToast } from "../components/ui/toastContext";
 import { useAuth } from "../contexts/AuthContext";
 
 const ParentDashboard = () => {

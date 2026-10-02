@@ -6,12 +6,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import {
-  ToastProvider,
-  Spinner,
-  PageTransition,
-  ScrollToTop,
-} from "./components/ui";
+import { ToastProvider } from "./components/ui/Toast";
+import { Spinner, PageTransition, ScrollToTop } from "./components/ui/Primitives";
 import Navbar from "./components/Navbar";
 import AppShell from "./components/AppShell";
 import ErrorBoundary from "./components/ErrorBoundary";

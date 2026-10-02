@@ -14,20 +14,10 @@ import {
 import api from "../api/axios";
 import { fullName, formatDate, ageInMonths, progressOf } from "../utils/format";
 import { apiErrorMessage } from "../utils/apiError";
-import {
-  PageHeader,
-  StatCard,
-  SectionCard,
-  DoseSummary,
-  Field,
-  SearchInput,
-  Segmented,
-  Modal,
-  Alert,
-  Skeleton,
-  Tooltip,
-  useToast,
-} from "../components/ui";
+import { PageHeader, StatCard, SectionCard, Tooltip } from "../components/ui/SummaryCards";
+import { DoseSummary, Segmented } from "../components/ui/Data";
+import { Field, SearchInput, Modal, Alert, Skeleton } from "../components/ui/Primitives";
+import { useToast } from "../components/ui/toastContext";
 
 const FILTERS = [
   { value: "due", label: "Due now", icon: Syringe },
