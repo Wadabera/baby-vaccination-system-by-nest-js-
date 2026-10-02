@@ -1,0 +1,1151 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ * Design tokens
+ *
+ * The pages were authored against `text-primary`, `bg-primary/10`,
+ * `text-text-muted` and friends. Declaring them as theme colours is what
+ * makes those existing utilities resolve; without this they are inert.
+ * ------------------------------------------------------------------ */
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+
+  /* ---------------------------------------------------------------- *
+   * Neutral ramp
+   *
+   * Tailwind's `slate-*` is redefined here so every existing utility
+   * (text-slate-900, bg-slate-50, divide-slate-100, ...) resolves to this
+   * cooler, slightly desaturated ink instead of the stock blue-grey.
+   * Doing it in the theme rather than rewriting the pages is what keeps
+   * the surfaces, borders and body text in the same family.
+   * ---------------------------------------------------------------- */
+  --color-slate-50: #f7f8fa;
+  --color-slate-100: #eef0f4;
+  --color-slate-200: #e2e5ec;
+  --color-slate-300: #cbd0da;
+  --color-slate-400: #9aa3b2;
+  --color-slate-500: #6f7a8c;
+  --color-slate-600: #515c6e;
+  --color-slate-700: #3a4557;
+  --color-slate-800: #232d3d;
+  --color-slate-900: #151d2b;
+  --color-slate-950: #0b111c;
+
+  /* Teal reads clinical and calm; a saturated brand blue reads generic
+     and competes with every status colour on the same screen. */
+  --color-primary: #0d9488;
+  --color-primary-light: #2dd4bf;
+  --color-primary-dark: #0f766e;
+  --color-secondary: #64748b;
+  --color-accent: #f43f5e;
+
+  --color-surface: #ffffff;
+  --color-canvas: #f5f7f9;
+  --color-ink: #151d2b;
+  --color-muted: #6f7a8c;
+
+  /* Role accents, used by the dashboard headers and badges. */
+  --color-role-admin: #e11d48;
+  --color-role-registrar: #d97706;
+  --color-role-doctor: #059669;
+  --color-role-parent: #2563eb;
+
+  /* Shadows are split by elevation rather than reused, so a raised
+     surface never looks identical to a resting one. */
+  --shadow-card:
+    0 1px 2px rgba(21, 29, 43, 0.04), 0 4px 16px -8px rgba(21, 29, 43, 0.08);
+  --shadow-lift:
+    0 2px 4px rgba(21, 29, 43, 0.04), 0 18px 40px -16px rgba(21, 29, 43, 0.16);
+  --shadow-glow: 0 10px 40px -12px rgba(13, 148, 136, 0.45);
+  --shadow-inset-line: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  --shadow-panel:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 18px 40px -20px rgba(0, 0, 0, 0.6);
+
+  --radius-card: 16px;
+
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-shimmer: shimmer 1.8s linear infinite;
+  --animate-fade-up: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  /* --- motion added for the dashboard surfaces ------------------- */
+  --animate-fade-in: fade-in 0.45s ease-out both;
+  --animate-scale-in: scale-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-slide-right: slide-right 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-gradient-x: gradient-x 6s ease infinite;
+  --animate-spin-slow: spin 14s linear infinite;
+  --animate-breathe: breathe 4.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-sheen: sheen 2.6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes pulse-ring {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(13, 148, 136, 0);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes slide-right {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+/* Background-position sweep behind gradient text and hero washes. */
+@keyframes gradient-x {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+/* Slow scale-and-fade used for decorative blobs. */
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.14);
+    opacity: 0.85;
+  }
+}
+/* Diagonal highlight that travels across a surface. */
+@keyframes sheen {
+  0% {
+    transform: translateX(-130%) skewX(-18deg);
+  }
+  60%,
+  100% {
+    transform: translateX(320%) skewX(-18deg);
+  }
+}
+
+/* Slow rise-and-fade used by scroll reveals. Deliberately unhurried: the
+   point is to guide the eye, not to demand attention. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Border gradient that walks around a card. Two offset backgrounds plus a
+   mask keep the effect to the edge, so no pseudo-element overlay. */
+@keyframes border-walk {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Soft pulse on the logo mark. */
+@keyframes logo-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgba(13, 148, 136, 0);
+  }
+}
+
+/* `text-text-muted` reads oddly but is what the pages already use. */
+@theme inline {
+  --color-text-muted: var(--color-muted);
+}
+
+/* ------------------------------------------------------------------ *
+ * Base layer
+ *
+ * Everything here lives in `@layer base` on purpose. Unlayered rules
+ * beat every Tailwind layer in the cascade, so a bare
+ * `* { padding: 0 }` here would silently override every padding
+ * utility in the app as well as the `.card` and `.btn` classes below.
+ * Tailwind's own preflight already performs the margin/padding reset,
+ * so repeating it is both redundant and harmful.
+ * ------------------------------------------------------------------ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background: var(--color-canvas);
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* The ambient wash uses 60rem radial gradients. On a narrow viewport
+       they would otherwise force a horizontal scrollbar. `clip` rather
+       than `hidden` so it does not create a scroll container and break
+       `position: sticky` headers. */
+    overflow-x: clip;
+  }
+
+  /* Respect the iPhone notch and home indicator. Applied to the two
+     fixed/sticky surfaces rather than globally, so scrolling content is
+     not padded twice. */
+  :root {
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+  }
+
+  /* Thin, unobtrusive scrollbars. `scrollbar-width` is inherited and
+     has no utility equivalent, so it belongs here rather than in the
+     component layer. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--color-slate-400) 45%, transparent)
+      transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--color-slate-400) 40%, transparent);
+    border: 3px solid transparent;
+    border-radius: 9999px;
+    background-clip: content-box;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--color-slate-400) 65%, transparent);
+    background-clip: content-box;
+  }
+}
+
+/* Ambient gradient wash behind the whole app. Fixed so it does not
+   repaint while scrolling. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(
+      60rem 40rem at 6% -10%,
+      rgba(13, 148, 136, 0.1),
+      transparent 60%
+    ),
+    radial-gradient(
+      50rem 34rem at 98% 2%,
+      rgba(45, 212, 191, 0.09),
+      transparent 62%
+    ),
+    radial-gradient(
+      46rem 34rem at 50% 110%,
+      rgba(100, 116, 139, 0.09),
+      transparent 60%
+    ),
+    var(--color-canvas);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--color-ink);
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: rgba(13, 148, 136, 0.22);
+}
+
+/* Keyboard focus only: a visible ring on mouse click reads as a bug. */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+@layer components {
+  /* ---------------------------------------------------------------- *
+   * Component classes
+   *
+   * Retained because the pages already reference them, but redefined on
+   * top of Tailwind so the raw hand-written CSS is gone and the variants
+   * (hover:, focus:, dark:) compose properly.
+   * ---------------------------------------------------------------- */
+  .glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+  }
+
+  .card {
+    position: relative;
+    background: var(--color-surface);
+    border-radius: var(--radius-card);
+    padding: 1.5rem;
+    border: 1px solid var(--color-slate-200);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.35s ease;
+  }
+
+  /* The lift is skipped on touch, where there is no hover state to
+     recover from and the transition only causes jank while scrolling. */
+  @media (hover: hover) {
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lift);
+      border-color: rgba(13, 148, 136, 0.3);
+    }
+  }
+
+  /* Flat variant for surfaces that sit inside a card, so nesting does
+     not turn into a shadow inside a shadow. */
+  .card-flat {
+    box-shadow: none;
+    border: 1px solid var(--color-slate-200);
+  }
+  @media (hover: hover) {
+    .card-flat:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    line-height: 1.25rem;
+    cursor: pointer;
+    border: none;
+    white-space: nowrap;
+    transition:
+      transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.25s ease,
+      background-color 0.25s ease,
+      color 0.25s ease,
+      opacity 0.2s ease;
+  }
+
+  .btn:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+    background-image: linear-gradient(
+      135deg,
+      var(--color-primary) 0%,
+      var(--color-primary-dark) 100%
+    );
+    box-shadow: 0 6px 18px -8px rgba(13, 148, 136, 0.75);
+  }
+
+  /* Sheen that sweeps across on hover. */
+  .btn-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 20%,
+      rgba(255, 255, 255, 0.42) 50%,
+      transparent 80%
+    );
+    transform: translateX(-120%);
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @media (hover: hover) {
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-glow);
+    }
+    .btn-primary:hover:not(:disabled)::after {
+      transform: translateX(120%);
+    }
+  }
+
+  .btn-ghost {
+    background: rgba(15, 23, 42, 0.04);
+    color: var(--color-ink);
+  }
+  @media (hover: hover) {
+    .btn-ghost:hover:not(:disabled) {
+      background: rgba(15, 23, 42, 0.08);
+    }
+  }
+
+  /* Quiet variant for secondary toolbars (Refresh, Cancel, Back). */
+  .btn-soft {
+    background: var(--color-surface);
+    color: var(--color-ink);
+    border: 1px solid rgba(15, 23, 42, 0.09);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+  }
+  @media (hover: hover) {
+    .btn-soft:hover:not(:disabled) {
+      border-color: rgba(13, 146, 244, 0.35);
+      color: var(--color-primary);
+      box-shadow: var(--shadow-card);
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Sits next to a primary action without competing with it. */
+  .btn-outline {
+    background: transparent;
+    color: var(--color-primary);
+    border: 1.5px solid rgba(13, 146, 244, 0.35);
+  }
+  @media (hover: hover) {
+    .btn-outline:hover:not(:disabled) {
+      background: rgba(13, 146, 244, 0.07);
+      border-color: var(--color-primary);
+      transform: translateY(-2px);
+    }
+  }
+
+  .btn-danger {
+    background: #e11d48;
+    color: #fff;
+  }
+  @media (hover: hover) {
+    .btn-danger:hover:not(:disabled) {
+      background: #be123c;
+      box-shadow: 0 10px 24px -12px rgba(225, 29, 72, 0.9);
+    }
+  }
+
+  .input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 14px;
+    border: 1.5px solid rgba(15, 23, 42, 0.1);
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--color-ink);
+    outline: none;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .input::placeholder {
+    color: rgba(100, 116, 139, 0.75);
+  }
+
+  .input:hover {
+    border-color: rgba(13, 148, 136, 0.45);
+  }
+
+  .input:focus {
+    border-color: var(--color-primary);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.13);
+  }
+
+  /* Invalid only once the user has actually typed something, otherwise
+     an empty required field flashes red on first paint. */
+  .input[aria-invalid="true"] {
+    border-color: #e11d48;
+    box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.12);
+  }
+
+  textarea.input {
+    resize: vertical;
+    min-height: 5rem;
+  }
+
+  select.input {
+    appearance: none;
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    cursor: pointer;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .badge-success {
+    background: #d1fae5;
+    color: #065f46;
+  }
+  .badge-warning {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .badge-danger {
+    background: #ffe4e6;
+    color: #9f1239;
+  }
+  .badge-info {
+    background: #e0f2fe;
+    color: #075985;
+  }
+
+  /* ---------------------------------------------------------------- *
+   * Interactive card
+   *
+   * A card that is itself a link or button. The inner lift plus the
+   * travelling sheen gives an obvious affordance without a separate
+   * "click here" element.
+   * ---------------------------------------------------------------- */
+  .card-interactive {
+    cursor: pointer;
+    will-change: transform;
+  }
+  .card-interactive::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 45%;
+    pointer-events: none;
+    background: linear-gradient(
+      100deg,
+      transparent,
+      rgba(255, 255, 255, 0.55),
+      transparent
+    );
+    opacity: 0;
+  }
+  @media (hover: hover) {
+    .card-interactive::after {
+      opacity: 1;
+      animation: sheen 1.1s ease-out;
+    }
+    .card-interactive:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lift);
+    }
+  }
+  .card-interactive:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+  }
+
+  /* Rows in a data table. Separated from `.card` so the hover tint is a
+     flat wash rather than a lift, which would fight table scrolling. */
+  .row-hover {
+    transition: background-color 0.18s ease;
+  }
+  @media (hover: hover) {
+    .row-hover:hover {
+      background-color: rgba(13, 146, 244, 0.045);
+    }
+  }
+
+  /* Sticky header that survives long table scrolls. */
+  .table-head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: rgba(248, 250, 252, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    border-radius: 12px;
+    color: var(--color-muted);
+    text-decoration: none;
+    font-weight: 500;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.2s ease;
+  }
+  @media (hover: hover) {
+    .sidebar-link:hover {
+      background: #fff;
+      color: var(--color-primary);
+      transform: translateX(3px);
+    }
+  }
+  .sidebar-link.active {
+    background: #fff;
+    color: var(--color-primary);
+    box-shadow: var(--shadow-card);
+  }
+}
+
+@layer utilities {
+  /* Staggered reveal for grids. Children must set `--index`. */
+  .stagger > * {
+    animation: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--index, 0) * 70ms);
+  }
+
+  /* ---------------------------------------------------------------- *
+   * Scroll reveal (progressive enhancement)
+   *
+   * `animation-timeline: view()` lets a reveal run purely in CSS as the
+   * element enters the viewport, with no observer in JavaScript. It is
+   * unsupported in Firefox and older Safari, so this is additive: where
+   * it is unsupported the element simply stays visible, because the
+   * animation's `from` state is only applied once the timeline is
+   * supported. Never hide content behind an animation that might not run.
+   * ---------------------------------------------------------------- */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: rise-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+
+    /* Children of a `.stagger-reveal` container offset by index. */
+    .stagger-reveal > * {
+      animation: rise-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 50%;
+    }
+    .stagger-reveal > *:nth-child(1) {
+      animation-range: entry 0% entry 45%;
+    }
+    .stagger-reveal > *:nth-child(2) {
+      animation-range: entry 0% entry 50%;
+    }
+    .stagger-reveal > *:nth-child(3) {
+      animation-range: entry 0% entry 55%;
+    }
+    .stagger-reveal > *:nth-child(4) {
+      animation-range: entry 0% entry 60%;
+    }
+    .stagger-reveal > *:nth-child(n + 5) {
+      animation-range: entry 0% entry 65%;
+    }
+  }
+
+  /* Gradient that travels around a card's border. The mask keeps it on
+     the edge only; without it this would fill the whole card. */
+  .glow-border {
+    position: relative;
+  }
+  .glow-border::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      120deg,
+      var(--color-primary),
+      var(--color-primary-light),
+      transparent 45%,
+      transparent 70%,
+      var(--color-accent)
+    );
+    background-size: 220% 220%;
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    animation: border-walk 7s ease-in-out infinite;
+  }
+  @media (hover: hover) {
+    .glow-border:hover::before {
+      opacity: 1;
+    }
+  }
+
+  /* Sweeps a diagonal highlight across a surface on hover. */
+  .hover-sheen {
+    position: relative;
+    overflow: hidden;
+  }
+  .hover-sheen::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -40%;
+    width: 40%;
+    pointer-events: none;
+    background: linear-gradient(
+      100deg,
+      transparent,
+      rgba(255, 255, 255, 0.45),
+      transparent
+    );
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  @media (hover: hover) {
+    .hover-sheen:hover::after {
+      opacity: 1;
+      animation: sheen 1.1s ease-out;
+    }
+  }
+
+  /* Slow glow behind the brand mark. */
+  .pulse-mark {
+    animation: logo-pulse 3.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Lifts and tints a tile on hover. Used for the summary cards so the
+     whole row responds, not just the icon. */
+  .tile-hover {
+    transition:
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.35s ease;
+  }
+  @media (hover: hover) {
+    .tile-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lift);
+    }
+  }
+
+  /* Underline that grows from the left on hover; used for text links. */
+  .link-underline {
+    position: relative;
+  }
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 2px;
+    width: 100%;
+    border-radius: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  @media (hover: hover) {
+    .link-underline:hover::after {
+      transform: scaleX(1);
+    }
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg, #eef2f7 25%, #f8fafc 50%, #eef2f7 75%);
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+    border-radius: 12px;
+  }
+
+  .text-gradient {
+    background-image: linear-gradient(
+      100deg,
+      var(--color-primary-dark),
+      var(--color-primary) 55%,
+      var(--color-primary-light)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Same gradient, but slowly travelling. Used on hero headings where a
+     static gradient reads as flat next to the animated surfaces. */
+  .text-gradient-animated {
+    background-image: linear-gradient(
+      100deg,
+      var(--color-primary-dark),
+      var(--color-primary) 45%,
+      var(--color-primary-light) 65%,
+      var(--color-primary)
+    );
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: var(--animate-gradient-x);
+  }
+
+  /* Soft coloured wash behind hero and panel headings. */
+  .surface-glow {
+    position: relative;
+    isolation: isolate;
+  }
+  .surface-glow::before {
+    content: "";
+    position: absolute;
+    inset: -40% -20% auto;
+    height: 140%;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      50% 50% at 50% 50%,
+      rgba(13, 148, 136, 0.14),
+      transparent 70%
+    );
+    filter: blur(10px);
+  }
+
+  /* ---------------------------------------------------------------- *
+   * App shell
+   *
+   * A persistent sidebar is what makes a dashboard read as a product
+   * rather than a page. These classes carry the layout so the shell
+   * component stays declarative.
+   * ---------------------------------------------------------------- */
+  .shell {
+    display: grid;
+    grid-template-columns: 17rem minmax(0, 1fr);
+    min-height: calc(100vh - var(--nav-h, 4.5rem));
+  }
+  @media (max-width: 1023px) {
+    .shell {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .shell-sidebar {
+    position: sticky;
+    top: var(--nav-h, 4.5rem);
+    align-self: start;
+    height: calc(100vh - var(--nav-h, 4.5rem));
+    overflow-y: auto;
+    border-right: 1px solid var(--color-slate-200);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  @media (max-width: 1023px) {
+    /* Off-canvas on mobile; the shell toggles `data-open`. */
+    .shell-sidebar {
+      position: fixed;
+      top: var(--nav-h, 4.5rem);
+      bottom: 0;
+      left: 0;
+      z-index: 45;
+      width: 17rem;
+      height: auto;
+      background: var(--color-surface);
+      transform: translateX(-100%);
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow: var(--shadow-lift);
+    }
+    .shell-sidebar[data-open="true"] {
+      transform: translateX(0);
+    }
+  }
+
+  .shell-main {
+    min-width: 0;
+    padding: 2rem 2.25rem 4rem;
+  }
+  @media (max-width: 640px) {
+    .shell-main {
+      padding: 1.25rem 1rem 3rem;
+    }
+  }
+
+  /* Keeps an anchored section clear of the sticky header when a sidebar
+     link scrolls it into view. */
+  .anchor-offset {
+    scroll-margin-top: calc(var(--nav-h, 4.5rem) + 1rem);
+  }
+
+  /* ---------------------------------------------------------------- *
+   * Touch targets
+   *
+   * Applied unconditionally rather than inside the mobile query: these
+   * are opt-in classes on icon-only controls, and 44px is the right
+   * target on a touch laptop as well as a phone. WCAG 2.5.8 only asks
+   * for 24px, but Apple and Android both recommend 44px.
+   * ---------------------------------------------------------------- */
+  .btn-touch {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Long tables scroll sideways inside their own container rather than
+     widening the page. */
+  .scroll-x {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+
+  /* ---------------------------------------------------------------- *
+   * Mobile
+   *
+   * Tightens the density that is comfortable on a desktop. Padding and
+   * type scale step down first because they are what actually crowd a
+   * 360px viewport.
+   * ---------------------------------------------------------------- */
+  @media (max-width: 640px) {
+    .card {
+      padding: 1.125rem;
+      border-radius: 14px;
+    }
+
+    .btn {
+      padding: 0.65rem 1.125rem;
+      font-size: 0.875rem;
+    }
+
+    .shell-main {
+      padding: 1rem 1rem 4rem;
+      padding-left: max(1rem, var(--safe-left));
+      padding-right: max(1rem, var(--safe-right));
+      padding-bottom: calc(4rem + var(--safe-bottom));
+    }
+
+    /* Full-width stacking for page headers and filter groups. */
+    .stack-on-mobile {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    /* Bottom padding so the last row of a dashboard is not trapped under
+       the iOS home indicator. */
+    main {
+      padding-bottom: calc(2rem + var(--safe-bottom));
+    }
+  }
+
+  /* Small caps label above a group of nav links. */
+  .nav-section-label {
+    padding: 0 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-slate-400);
+  }
+
+  /* Active nav item: a filled rail plus tint, so the current location is
+     obvious at a glance without relying on colour alone. */
+  .nav-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-slate-600);
+    text-decoration: none;
+    transition:
+      background-color 0.18s ease,
+      color 0.18s ease;
+  }
+  @media (hover: hover) {
+    .nav-item:hover {
+      background: var(--color-slate-100);
+      color: var(--color-slate-900);
+    }
+  }
+  .nav-item[aria-current="page"] {
+    background: rgba(13, 148, 136, 0.09);
+    color: var(--color-primary-dark);
+  }
+  .nav-item[aria-current="page"]::before {
+    content: "";
+    position: absolute;
+    left: -0.75rem;
+    top: 50%;
+    height: 1.25rem;
+    width: 3px;
+    translate: 0 -50%;
+    border-radius: 0 3px 3px 0;
+    background: var(--color-primary);
+  }
+
+  /* Hides a horizontal scrollbar on chip rows while keeping them scrollable. */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Edge fade that signals a chip row continues off-screen. */
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 2.5rem,
+      #000 calc(100% - 2.5rem),
+      transparent
+    );
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 2.5rem,
+      #000 calc(100% - 2.5rem),
+      transparent
+    );
+  }
+
+  /* Diagonal stripes for "not available yet" placeholders. */
+  .stripe-soft {
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(148, 163, 184, 0.09) 0 10px,
+      transparent 10px 20px
+    );
+  }
+
+  /* Printing a health card should drop the chrome and keep the record. */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    body::before {
+      display: none;
+    }
+    body {
+      background: #fff;
+    }
+    .card {
+      box-shadow: none;
+      border: 1px solid #cbd5e1;
+      break-inside: avoid;
+    }
+    main {
+      padding: 0 !important;
+    }
+    @page {
+      margin: 12mm;
+    }
+  }
+
+  /* Hides content visually while keeping it for screen readers. */
+  .sr-only-focusable:not(:focus):not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}
+
+/* Respect the OS setting. Animations are decoration here, never the
+   only way information is conveyed. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

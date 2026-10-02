@@ -1,0 +1,41 @@
+.container {
+    margin: auto;
+    width: 80%;
+}
+
+.center {
+    text-align: center;
+}
+
+.wrapper {
+    margin-top: 50px;
+}
+
+.btn-primary {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4267B2;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.success {
+    color: green;
+}
+
+.fullwidth {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.fullwidth td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.profile-image {
+    border-radius: 50%;
+    width: 200px;
+}

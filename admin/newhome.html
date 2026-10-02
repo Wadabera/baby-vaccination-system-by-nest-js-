@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infant Vaccination Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+  /* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Parallax Scrolling Effect */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+.parallax {
+    background-image: url('photoup.jpg');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    background-color: #333;  /* Fallback color */
+}
+
+
+.parallax .content {
+    padding: 30px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+}
+
+.parallax h1 {
+    font-size: 50px;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 0 0 20px #FF00FF, 0 0 30px #FF00FF;
+    animation: neonGlow 2s ease-in-out infinite;
+}
+
+.parallax p {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.parallax ul {
+    list-style: none;
+    font-size: 18px;
+}
+
+.parallax ul li {
+    margin: 10px 0;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+/* Navbar Styles */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: rgba(0, 49, 97, 0.8); /* Dark Blue */
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s ease-in-out;
+}
+
+nav .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #FFFFFF;
+    text-transform: uppercase;
+}
+
+nav .nav-links {
+    list-style: none;
+    display: flex;
+}
+
+nav .nav-links li {
+    margin: 0 15px;
+}
+
+nav .nav-links a {
+    color: #FFFFFF;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 5px;
+    transition: all 0.3s ease;
+}
+
+nav .nav-links a:hover {
+    color: #FFD700;
+    text-decoration: underline;
+    box-shadow: 0 0 10px 2px #FFD700;
+    transform: scale(1.1);
+}
+
+/* Footer Styles */
+footer {
+    background-color: #003161; /* Dark Blue */
+    color: #FFFFFF;
+    text-align: center;
+    padding: 20px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1);
+}
+
+footer p {
+    font-size: 18px;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+/* Neon Glow Animation */
+@keyframes neonGlow {
+    0% { text-shadow: 0 0 20px #FF00FF, 0 0 30px #FF00FF, 0 0 40px #FF00FF; }
+    50% { text-shadow: 0 0 10px #00FF00, 0 0 20px #00FF00, 0 0 30px #00FF00; }
+    100% { text-shadow: 0 0 20px #FF00FF, 0 0 30px #FF00FF, 0 0 40px #FF00FF; }
+}
+
+/* Gradient Background for Navbar */
+nav {
+    background: linear-gradient(45deg, #16C47F, #4DA1A9, #A1D6CB);
+}
+
+/* Hover Effects */
+nav .nav-links a:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px 5px #FFD700;
+}
+
+/* Smoother Borders & Shadows */
+nav, footer {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Parallax Effect */
+//body {
+  
+    background: linear-gradient(45deg, #16C47F, #4DA1A9, #A1D6CB);
+    transition: all 0.5s ease;
+}
+
+footer {
+    background-color: #003161; /* Dark Blue */
+    padding: 20px;
+    color: #FFFFFF;
+    font-size: 18px;
+    box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .parallax h1 {
+        font-size: 36px;
+    }
+
+    nav .nav-links {
+        flex-direction: column;
+        margin-top: 20px;
+    }
+
+    nav .nav-links li {
+        margin: 10px 0;
+    }
+
+    .footer-content {
+        font-size: 16px;
+    }
+}
+
+</style>
+<body>
+    <!-- Navbar Section -->
+    <nav>
+        <div class="logo">Infant Vaccination</div>
+        <ul class="nav-links">
+            <li><a href="#login">Login</a></li>
+            <li><a href="#signup">Signup</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Parallax Scrolling Section -->
+    <section class="parallax">
+        <div class="content">
+            <h1>Immunization Against Infectious Diseases</h1>
+            <p>Protect your child from diseases like:</p>
+            <ul>
+                <li>Corona Virus</li>
+                <li>Polio</li>
+                <li>Measles</li>
+                <li>TB</li>
+                <li>Hepatitis</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="footer-content">
+            <p>Jimma Referral Hospital, Jimma, Ethiopia</p>
+        </div>
+    </footer>
+</body>
+</html>

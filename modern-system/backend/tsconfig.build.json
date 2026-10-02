@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "test",
+    "dist",
+    "**/*spec.ts",
+    "src/database/smoke-test.ts",
+    "src/database/run-with-memory-db.ts"
+  ],
+  "compilerOptions": {
+    "declaration": false,
+    "sourceMap": false,
+    "incremental": false
+  }
+}

@@ -1,0 +1,23 @@
+node_modules/
+dist/
+build/
+coverage/
+
+# Local configuration and secrets
+.env
+.env.local
+backend/.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# Uploads and generated cards
+backend/uploads/
+uploads/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

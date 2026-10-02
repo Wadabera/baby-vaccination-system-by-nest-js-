@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: vaccination-mongodb-prod
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-password123}
+    volumes:
+      - mongodb_data_prod:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    command: mongod --auth --bind_ip_all
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    networks:
+      - vaccination-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: vaccination-redis-prod
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data_prod:/data
+    networks:
+      - vaccination-network
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: vaccination-rabbitmq-prod
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-admin}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-password123}
+    volumes:
+      - rabbitmq_data_prod:/var/lib/rabbitmq
+    networks:
+      - vaccination-network
+
+  backend:
+    image: vaccination-backend:prod
+    container_name: vaccination-backend-prod
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: production
+      MONGODB_URI: ${MONGODB_URI:-mongodb://admin:password123@mongodb:27017/vaccination?authSource=admin}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      RABBITMQ_URL: ${RABBITMQ_URL:-amqp://admin:password123@rabbitmq:5672}
+      JWT_SECRET: ${JWT_SECRET}
+      PORT: 5000
+    depends_on:
+      - mongodb
+      - redis
+      - rabbitmq
+    networks:
+      - vaccination-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health/check"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    image: vaccination-frontend:prod
+    container_name: vaccination-frontend-prod
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - vaccination-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: vaccination-nginx-prod
+    restart: always
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./nginx-prod.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - vaccination-network
+
+volumes:
+  mongodb_data_prod:
+  redis_data_prod:
+  rabbitmq_data_prod:
+
+networks:
+  vaccination-network:
+    driver: bridge

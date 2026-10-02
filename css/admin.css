@@ -1,0 +1,161 @@
+*{
+    margin: 0;
+    padding: 0;
+    background-color: rgb(255, 249, 249);
+}
+
+.clear-fixt{
+    float: none;
+    clear: both;
+}
+
+.wrapper{
+    margin: 0 auto;
+    padding: 1%;
+    width: 80%;
+
+}
+.text-center{
+    text-align: center;
+    background-color: transparent;
+}
+
+.footer{
+  background-color:  #ff4757;
+
+}
+.footer .wrapper, p{
+    background-color: transparent;
+}
+a{
+    background-color: transparent;
+}
+
+.menu{
+    background-color: white;
+    text-align: center;
+    padding: 1%;
+    border-bottom: 1px solid gray;
+
+}
+.main .wrapper{
+    background-color: transparent;
+}
+.main .wrapper ul  {
+    background-color: transparent; 
+    list-style-type: none;
+}
+
+.menu .wrapper ul li{
+    display: inline;
+    padding: 1%;
+    list-style: none;
+    background-color: transparent;
+}
+.menu .wrapper ul li a{
+    text-decoration: none;
+    font-weight: bold;
+    color: #ff6b81; 
+    background-color: transparent;
+}
+.menu ul li a:hover{
+    color: #ff4757;
+}
+
+.main{
+    margin: 1%;
+
+}
+.main .catagor{
+    width: 17%;
+    margin: 1%;
+    padding: 2%;
+    background-color: white;
+    float: left;
+}
+
+
+.menu{
+    background-color: white;
+}
+
+.menu .wrapper ul li{
+    background-color: white;
+}
+
+.fullwidth{
+    width: 100%;
+}
+
+.halfwidth{
+    width: 50%;
+}
+
+table tr th{
+    font-weight: bold;
+    border-bottom: 1px solid black;
+    padding: 1%;
+    text-align: left;
+}
+
+table tr td{
+    padding: 1%;
+}
+
+
+
+
+.btn-primary{
+    background-color: #1e90ff;
+    padding: 0.81%;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+.btn-primary:hover{
+    background-color: #3742fa;
+}
+
+.btn-sec{
+    background-color: #7bed9f;
+    color: black;
+    padding: 0.81%;
+    text-decoration: none;
+    font-weight: bold;
+}
+.btn-sec:hover{
+    background-color: #2ed573;
+}
+
+.btn-dang{
+    background-color: #ff6b81;
+    padding: 0.81%;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+.btn-dang:hover{
+    background-color: #ff4757;
+}
+
+.btn-three{
+    background-color: #2b6df2;
+    padding: 0.81%;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+.btn-three:hover{
+    background-color: #1e1aef;
+}
+
+.error{
+    color: #ff4757;
+}
+.success{
+    color: #2ed573;
+}
+
+
+
+
