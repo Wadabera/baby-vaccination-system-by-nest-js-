@@ -11,16 +11,21 @@ database    MongoDB Atlas (shared with your other apps)
 ```
 
 **Your backend is already live at `https://baby-vaccination-system.onrender.com`.**
-The frontend is pre-wired to it — `frontend/.env.production` is committed with
-the full API URL, so the Vercel build needs no environment variable for it.
+**Your frontend is live at `https://baby-vaccination-system-by-nest-js.vercel.app`.**
+The frontend is pre-wired to the backend — `frontend/.env.production` is
+committed with the full API URL, so the Vercel build needs no environment
+variable for it.
 
 That leaves exactly one thing to do, and it is not optional:
 
-> **Set `CORS_ORIGIN` on Render to your Vercel URL.**
+> **Set `CORS_ORIGIN` on Render to
+> `https://baby-vaccination-system-by-nest-js.vercel.app`.**
 >
-> The deployed API currently allows only `http://localhost:3000`, so from
-> Vercel the browser blocks every request. Verified: the API answers correctly,
-> but returns no `Access-Control-Allow-Origin` header for a Vercel origin.
+> Until then the deployed API allows only `http://localhost:3000`, so the
+> browser blocks every request from Vercel. Verified: the API answers correctly
+> and even returns a valid token, but sends no `Access-Control-Allow-Origin`
+> header for a Vercel origin — which is why login fails while the backend looks
+> perfectly healthy.
 
 Deploy the frontend first, copy the URL Vercel gives you, then set `CORS_ORIGIN`
 and redeploy the backend.
@@ -75,7 +80,7 @@ Set these in the Render dashboard under **Environment**:
 | --- | --- | --- |
 | `MONGODB_URI` | `mongodb+srv://user:pass@cluster.mongodb.net/vaccination?retryWrites=true&w=majority` | Your Atlas connection string. |
 | `JWT_SECRET` | *(let Render generate it)* | Any long random string. |
-| `CORS_ORIGIN` | `https://your-app.vercel.app` | Add after the frontend exists. Multiple origins separated by commas. |
+| `CORS_ORIGIN` | `https://baby-vaccination-system-by-nest-js.vercel.app` | **Must be set** or the browser blocks Vercel. Comma-separate for several. |
 | `NODE_ENV` | `production` | Set by the blueprint. |
 | `JWT_EXPIRES_IN` | `1h` | Access-token lifetime. |
 | `MONGO_AUTO_INDEX` | `true` | Builds the unique indexes Atlas cannot create itself. |
@@ -151,7 +156,7 @@ If the backend address ever changes, edit that one file and commit.
 
 **This is the step that makes login work, and it cannot be skipped.**
 
-Once Vercel gives you a URL such as `https://baby-vaccination-system.vercel.app`:
+Once Vercel gives you a URL which is `https://baby-vaccination-system-by-nest-js.vercel.app`:
 
 1. Render → `baby-vaccination-system` → **Environment**
 2. Set `CORS_ORIGIN` to that URL
@@ -160,7 +165,7 @@ Once Vercel gives you a URL such as `https://baby-vaccination-system.vercel.app`
 
 ```bash
 curl -s -i https://baby-vaccination-system.onrender.com/api/posts \
-  -H 'Origin: https://baby-vaccination-system.vercel.app' \
+  -H 'Origin: https://baby-vaccination-system-by-nest-js.vercel.app' \
   | grep -i access-control-allow-origin
 ```
 
@@ -172,7 +177,7 @@ production URL and, if you need previews, the preview URL too — CORS accepts a
 comma-separated list:
 
 ```
-CORS_ORIGIN=https://baby-vaccination-system.vercel.app,https://baby-vaccination-system-git-main-wadabera.vercel.app
+CORS_ORIGIN=https://baby-vaccination-system-by-nest-js.vercel.app,https://baby-vaccination-system-by-nest-js-git-main-wadabera.vercel.app
 ```
 
 ### Optional: a custom domain
@@ -196,14 +201,14 @@ curl -s $API/api/health/check
 # 2. Login works (add -H 'Origin: <your vercel url>' to prove CORS too)
 curl -s -X POST $API/api/auth/login \
   -H 'Content-Type: application/json' \
-  -H 'Origin: https://baby-vaccination-system.vercel.app' \
+  -H 'Origin: https://baby-vaccination-system-by-nest-js.vercel.app' \
   -d '{"username":"admin","password":"Vaccinate@2024"}'
 #    expect: accessToken in the response
 
 # 3. CORS is open to the frontend origin
-curl -s -i $API/api/posts -H 'Origin: https://baby-vaccination-system.vercel.app' \
+curl -s -i $API/api/posts -H 'Origin: https://baby-vaccination-system-by-nest-js.vercel.app' \
   | grep -i access-control-allow-origin
-#    expect: Access-Control-Allow-Origin: https://baby-vaccination-system.vercel.app
+#    expect: Access-Control-Allow-Origin: https://baby-vaccination-system-by-nest-js.vercel.app
 ```
 
 Then, in a browser on the Vercel URL:
@@ -278,7 +283,8 @@ Almost always CORS. Confirm the header exists:
 
 ```bash
 curl -s -i https://baby-vaccination-system.onrender.com/api/posts \
-  -H 'Origin: https://your-app.vercel.app' | grep -i access-control-allow-origin
+  -H 'Origin: https://baby-vaccination-system-by-nest-js.vercel.app' \
+  | grep -i access-control-allow-origin
 ```
 
 No header printed means `CORS_ORIGIN` on Render does not include that exact
