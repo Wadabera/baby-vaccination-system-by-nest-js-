@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { homeFor } from "../utils/navigation";
+import { apiErrorMessage } from "../utils/apiError";
 import { Reveal, Alert, Field } from "../components/ui";
 
 const HIGHLIGHTS = [
@@ -102,8 +103,9 @@ const Login = () => {
       const user = await login(identifier, password);
       navigate(homeFor(user.role), { replace: true });
     } catch (err) {
-      const message = err.response?.data?.message;
-      setError(message || "Invalid username or password");
+      // A network or CORS failure must not be reported as a bad password:
+      // that sends people looking for the wrong problem entirely.
+      setError(apiErrorMessage(err, "Invalid username or password"));
     } finally {
       setSubmitting(false);
     }

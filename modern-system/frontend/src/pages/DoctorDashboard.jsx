@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import api from "../api/axios";
 import { fullName, formatDate, ageInMonths, progressOf } from "../utils/format";
+import { apiErrorMessage } from "../utils/apiError";
 import {
   PageHeader,
   StatCard,
@@ -72,7 +73,7 @@ const DoctorDashboard = () => {
       setQueue(queueResponse.data ?? []);
       setError("");
     } catch (err) {
-      setError(err.response?.data?.message || "Could not load patient records");
+      setError(apiErrorMessage(err, "Could not load patient records"));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -112,12 +113,7 @@ const DoctorDashboard = () => {
     } catch (err) {
       // The safety gate returns a sentence naming the blocker; show it as-is
       // rather than a generic failure.
-      const message = err.response?.data?.message;
-      setDialogError(
-        Array.isArray(message)
-          ? message.join(", ")
-          : message || "Could not record dose",
-      );
+      setDialogError(apiErrorMessage(err, "Could not record dose"));
     } finally {
       setSaving(false);
     }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { homeFor } from "../utils/navigation";
+import { apiErrorMessage } from "../utils/apiError";
 import {
   UserPlus,
   Mail,
@@ -93,11 +94,10 @@ const Register = () => {
       // page reload and throw away the session we just stored.
       setTimeout(() => navigate(homeFor(user.role)), 1200);
     } catch (err) {
-      const message = err.response?.data?.message;
+      // Joins the ValidationPipe rule list into a sentence, and keeps a
+      // transport failure from masquerading as a rejected form.
       setError(
-        Array.isArray(message)
-          ? message.join(", ")
-          : message || "Registration failed",
+        apiErrorMessage(err, "Registration failed"),
       );
     } finally {
       setSubmitting(false);

@@ -22,6 +22,12 @@ modern-system/.env
 modern-system/.env.*
 !modern-system/.env.example
 
+# The frontend's production build settings are committed on purpose: they hold
+# only the public Render URL, and Vite inlines them at build time. Committing
+# them keeps the Vercel build reproducible instead of depending on a dashboard
+# variable that is invisible in a pull request.
+!modern-system/frontend/.env.production
+
 # Logs
 *.log
 npm-debug.log*

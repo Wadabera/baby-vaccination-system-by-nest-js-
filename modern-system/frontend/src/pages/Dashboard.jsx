@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import api from "../api/axios";
 import { fullName, formatDate, progressOf } from "../utils/format";
+import { apiErrorMessage } from "../utils/apiError";
 import {
   PageHeader,
   StatCard,
@@ -55,8 +56,7 @@ const Dashboard = () => {
       setHealth(healthResponse.data);
       setRecent((childrenResponse.data ?? []).slice(0, 5));
     } catch (err) {
-      const message =
-        err.response?.data?.message || "Could not load dashboard data";
+      const message = apiErrorMessage(err, "Could not load dashboard data");
       setError(message);
       notify(message, "error");
     } finally {

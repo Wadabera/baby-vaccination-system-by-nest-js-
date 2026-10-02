@@ -10,12 +10,27 @@ frontend root modern-system/frontend → Vercel
 database    MongoDB Atlas (shared with your other apps)
 ```
 
+**Your backend is already live at `https://baby-vaccination-system.onrender.com`.**
+The frontend is pre-wired to it — `frontend/.env.production` is committed with
+the full API URL, so the Vercel build needs no environment variable for it.
+
+That leaves exactly one thing to do, and it is not optional:
+
+> **Set `CORS_ORIGIN` on Render to your Vercel URL.**
+>
+> The deployed API currently allows only `http://localhost:3000`, so from
+> Vercel the browser blocks every request. Verified: the API answers correctly,
+> but returns no `Access-Control-Allow-Origin` header for a Vercel origin.
+
+Deploy the frontend first, copy the URL Vercel gives you, then set `CORS_ORIGIN`
+and redeploy the backend.
+
 ---
 
 ## Order of operations
 
 1. Backend on Render
-2. Note the Render URL, e.g. `https://vaccination-api.onrender.com`
+2. Note the Render URL. Yours is `https://baby-vaccination-system.onrender.com`
 3. Frontend on Vercel, with that URL in `VITE_API_URL`
 4. Copy the Vercel URL back into the backend's `CORS_ORIGIN` and redeploy
 
@@ -95,7 +110,7 @@ npm run seed         # demo accounts and records
 ### Verify
 
 ```bash
-curl https://vaccination-api.onrender.com/api/health/check
+curl https://baby-vaccination-system.onrender.com/api/health/check
 ```
 
 Expect `{"status":"ok","database":"connected", ...}`.
@@ -110,52 +125,60 @@ seconds. That is normal, not a failure.
 1. Vercel dashboard → **Add New** → **Project** → import the repository
 2. Set **Root Directory** to `modern-system/frontend`
 3. Framework preset **Vite** (detected automatically)
-4. Add the environment variable below
-5. **Deploy**
+4. **Deploy**
 
 `vercel.json` already supplies the build command, the `dist` output directory,
 the SPA fallback rewrite and the cache headers, so nothing else is needed.
 
 ### Environment variables
 
-| Variable | Value |
-| --- | --- |
-| `VITE_API_URL` | `https://your-backend.onrender.com/api` |
+**None.** `frontend/.env.production` is committed and already contains:
 
-> The trailing `/api` is required. The backend serves everything under
-> `/api`, and the frontend appends paths like `/auth/login`.
+```
+VITE_API_URL=https://baby-vaccination-system.onrender.com/api
+```
 
-### Why this variable cannot be set later
+It holds only the public URL of your API, not a secret, which is why it is safe
+to commit and reviewable in a pull request. It exists because Vite inlines
+`VITE_*` at build time — a dashboard variable set after the first deploy has no
+effect until a redeploy, which is an easy way to ship a broken build.
 
-Vite inlines `VITE_*` variables **into the JavaScript bundle at build time**.
-There is no runtime configuration file in a static deployment. Setting the
-variable after the first deploy has no effect until you redeploy. Verified:
-with the variable set the host appears in the bundle, and without it the
-frontend falls back to the relative `/api` and cannot reach a different domain.
+If the backend address ever changes, edit that one file and commit.
 
 ---
 
 ## 3. Wire the two together
 
-Once Vercel gives you a URL such as `https://baby-vaccination.vercel.app`:
+**This is the step that makes login work, and it cannot be skipped.**
 
-1. Render → your service → **Environment**
+Once Vercel gives you a URL such as `https://baby-vaccination-system.vercel.app`:
+
+1. Render → `baby-vaccination-system` → **Environment**
 2. Set `CORS_ORIGIN` to that URL
-3. Save and redeploy
+3. Save, then **redeploy** (Render applies env changes on redeploy, not on save)
+4. Confirm with:
+
+```bash
+curl -s -i https://baby-vaccination-system.onrender.com/api/posts \
+  -H 'Origin: https://baby-vaccination-system.vercel.app' \
+  | grep -i access-control-allow-origin
+```
+
+That must print your Vercel URL. If it prints nothing, the browser is blocking
+the app and login will fail with "Could not reach the server".
 
 If you use preview deployments they get a different URL each time. Add the
-production URL and, if you need previews, the Vercel pattern too:
+production URL and, if you need previews, the preview URL too — CORS accepts a
+comma-separated list:
 
 ```
-CORS_ORIGIN=https://your-app.vercel.app,https://your-app-git-main-wadabera.vercel.app
+CORS_ORIGIN=https://baby-vaccination-system.vercel.app,https://baby-vaccination-system-git-main-wadabera.vercel.app
 ```
-
-CORS accepts a comma-separated list.
 
 ### Optional: a custom domain
 
-Add the domain in Vercel, then set `CORS_ORIGIN` to the custom origin. Update
-`VITE_API_URL` only if the backend domain also changes.
+Add the domain in Vercel, then set `CORS_ORIGIN` to the custom origin. Edit
+`frontend/.env.production` only if the backend domain also changes.
 
 ---
 
@@ -164,29 +187,47 @@ Add the domain in Vercel, then set `CORS_ORIGIN` to the custom origin. Update
 Run these once both services are up.
 
 ```bash
-API=https://your-backend.onrender.com
+API=https://baby-vaccination-system.onrender.com
 
 # 1. Backend is alive and connected to Atlas
 curl -s $API/api/health/check
+#    expect: status "ok", database "connected"
 
-# 2. Login works
+# 2. Login works (add -H 'Origin: <your vercel url>' to prove CORS too)
 curl -s -X POST $API/api/auth/login \
   -H 'Content-Type: application/json' \
+  -H 'Origin: https://baby-vaccination-system.vercel.app' \
   -d '{"username":"admin","password":"Vaccinate@2024"}'
+#    expect: accessToken in the response
 
 # 3. CORS is open to the frontend origin
-curl -s -i $API/api/posts -H 'Origin: https://your-app.vercel.app' \
+curl -s -i $API/api/posts -H 'Origin: https://baby-vaccination-system.vercel.app' \
   | grep -i access-control-allow-origin
-#    expect: Access-Control-Allow-Origin: https://your-app.vercel.app
+#    expect: Access-Control-Allow-Origin: https://baby-vaccination-system.vercel.app
 ```
 
 Then, in a browser on the Vercel URL:
 
 - [ ] The landing page loads and the sign-in buttons appear
-- [ ] Signing in as `admin` reaches `/admin` and lists six accounts
+- [ ] Signing in as `admin` reaches `/admin` and lists the accounts
 - [ ] The doctor dashboard shows the safety worklist
 - [ ] A parent sees two children with their coverage rings
 - [ ] Browser console shows no CORS errors
+
+A refresh on a deep route such as `/admin` or `/children/:id` must load the app,
+not a 404. That is the SPA rewrite in `vercel.json` doing its job.
+
+### Reading the error messages
+
+The app distinguishes three kinds of failure, because telling them apart is
+what makes a broken deploy debuggable:
+
+| What you see | What it means |
+| --- | --- |
+| `Invalid credentials. N attempts remaining.` | The API answered. Wrong username or password. |
+| `Could not reach the server...` | No response arrived. Check `CORS_ORIGIN` and the API URL. |
+| `You appear to be offline.` | The browser reports no network connection. |
+| `Something went wrong` with a `5xx` in the console | The API crashed. Read the Render logs. |
 
 ---
 
@@ -197,7 +238,9 @@ browser makes same-origin requests and CORS never applies.
 
 **Deployed** the browser calls the Render origin directly. That is a
 cross-origin request, which is why `CORS_ORIGIN` on the backend and
-`VITE_API_URL` on the frontend must both be right.
+`VITE_API_URL` on the frontend must both be right. `VITE_API_URL` lives in the
+committed `frontend/.env.production`, so only `CORS_ORIGIN` is left for you to
+set in the dashboard.
 
 Three production behaviours are configured specifically for this setup:
 
@@ -227,8 +270,19 @@ The SPA rewrite is missing. Confirm `modern-system/frontend` is the Vercel
 root directory so `vercel.json` is picked up.
 
 **Sign-in works, then the app calls the wrong URL**
-`VITE_API_URL` is missing `/api`, or was set after the deploy. Vite inlines it
-at build time, so redeploy after any change.
+`VITE_API_URL` is missing `/api`. It lives in the committed
+`frontend/.env.production`; confirm it ends in `/api` and redeploy Vercel.
+
+**Login shows "Could not reach the server" but the API is fine**
+Almost always CORS. Confirm the header exists:
+
+```bash
+curl -s -i https://baby-vaccination-system.onrender.com/api/posts \
+  -H 'Origin: https://your-app.vercel.app' | grep -i access-control-allow-origin
+```
+
+No header printed means `CORS_ORIGIN` on Render does not include that exact
+origin — including its scheme and without a trailing slash.
 
 **`Invalid MONGODB_URI` or the service will not start**
 The connection string is missing, or the password contains characters that

@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import api from "../api/axios";
 import { fullName } from "../utils/format";
+import { apiErrorMessage } from "../utils/apiError";
 import {
   StatCard,
   PageHeader,
@@ -85,7 +86,7 @@ const AdminDashboard = () => {
       setUsers(usersResponse.data);
       setStats(statsResponse?.data ?? null);
     } catch (err) {
-      setError(err.response?.data?.message || "Could not load users");
+      setError(apiErrorMessage(err, "Could not load users"));
     } finally {
       setLoading(false);
     }
@@ -140,7 +141,7 @@ const AdminDashboard = () => {
       );
       await load();
     } catch (err) {
-      setError(err.response?.data?.message || "Action failed");
+      setError(apiErrorMessage(err, "Action failed"));
     } finally {
       setBusyId(null);
     }
@@ -166,7 +167,7 @@ const AdminDashboard = () => {
       notify(`${fullName(user)} is now a ${role}.`);
       await load();
     } catch (err) {
-      setError(err.response?.data?.message || "Could not change role");
+      setError(apiErrorMessage(err, "Could not change role"));
       // Re-render so the select snaps back to the stored role.
       await load();
     } finally {
@@ -185,12 +186,7 @@ const AdminDashboard = () => {
       notify("Account created.");
       await load();
     } catch (err) {
-      const message = err.response?.data?.message;
-      setError(
-        Array.isArray(message)
-          ? message.join(", ")
-          : message || "Could not create user",
-      );
+      setError(apiErrorMessage(err, "Could not create user"));
     } finally {
       setCreating(false);
     }
@@ -594,7 +590,7 @@ const PostsPanel = () => {
       notify("Announcement published.");
       await load();
     } catch (err) {
-      setError(err.response?.data?.message || "Could not publish post");
+      setError(apiErrorMessage(err, "Could not publish post"));
     }
   };
 

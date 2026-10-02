@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import api from "../api/axios";
 import { fullName, formatDate, progressOf, ageInMonths } from "../utils/format";
+import { apiErrorMessage } from "../utils/apiError";
 import {
   DoseTimeline,
   DoseSummary,
@@ -50,7 +51,7 @@ const ChildDetail = () => {
       const { data } = await api.get(`/children/${id}`);
       setChild(data);
     } catch (err) {
-      setError(err.response?.data?.message || "Record not found");
+      setError(apiErrorMessage(err, "Record not found"));
     } finally {
       setLoading(false);
     }

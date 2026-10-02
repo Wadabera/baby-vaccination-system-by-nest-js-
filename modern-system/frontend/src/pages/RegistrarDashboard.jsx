@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import api from "../api/axios";
 import { fullName, formatDate, BLOOD_TYPES } from "../utils/format";
+import { apiErrorMessage } from "../utils/apiError";
 import {
   PageHeader,
   StatCard,
@@ -88,7 +89,7 @@ const RegistrarDashboard = () => {
       const { data } = await api.get("/mothers");
       setMothers(data ?? []);
     } catch (err) {
-      setError(err.response?.data?.message || "Could not load mothers");
+      setError(apiErrorMessage(err, "Could not load mothers"));
     } finally {
       setLoading(false);
     }
@@ -147,12 +148,7 @@ const RegistrarDashboard = () => {
       closeForm();
       await loadMothers();
     } catch (err) {
-      const message = err.response?.data?.message;
-      setError(
-        Array.isArray(message)
-          ? message.join(", ")
-          : message || "Registration failed",
-      );
+      setError(apiErrorMessage(err, "Registration failed"));
     } finally {
       setSaving(false);
     }
@@ -182,12 +178,7 @@ const RegistrarDashboard = () => {
       closeForm();
       await loadMothers();
     } catch (err) {
-      const message = err.response?.data?.message;
-      setError(
-        Array.isArray(message)
-          ? message.join(", ")
-          : message || "Registration failed",
-      );
+      setError(apiErrorMessage(err, "Child registration failed"));
     } finally {
       setSaving(false);
     }
@@ -202,7 +193,7 @@ const RegistrarDashboard = () => {
       notify(`${fullName(mother)} deactivated.`);
       await loadMothers();
     } catch (err) {
-      setError(err.response?.data?.message || "Could not deactivate");
+      setError(apiErrorMessage(err, "Could not deactivate"));
     }
   };
 

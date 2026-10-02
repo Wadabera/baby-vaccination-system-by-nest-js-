@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import api from "../api/axios";
 import { fullName, formatDate, progressOf } from "../utils/format";
+import { apiErrorMessage } from "../utils/apiError";
 import {
   PageHeader,
   ProgressBar,
@@ -40,10 +41,12 @@ const ParentDashboard = () => {
       const { data } = await api.get("/children/my-children");
       setChildren(data ?? []);
     } catch (err) {
+      // A 403 here is the meaningful case: a parent account with no children
+      // linked. Keep that specific message ahead of the generic one.
       const message =
         err.response?.status === 403
           ? "This account is not set up as a parent portal account."
-          : err.response?.data?.message || "Could not load your children";
+          : apiErrorMessage(err, "Could not load your children");
       setError(message);
       notify(message, "error");
     } finally {
